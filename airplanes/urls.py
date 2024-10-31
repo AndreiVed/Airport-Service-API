@@ -1,7 +1,18 @@
-from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 
-app_name = "airport"
+from airplanes.views import (
+    AirplaneViewSet,
+    AirplaneTypeViewSet,
+    ManufacturerViewSet
+)
 
-urlpatterns = [
-]
+app_name = "airplanes"
+
+router = routers.DefaultRouter()
+router.register("airplanes", AirplaneViewSet)
+router.register("airplane_types", AirplaneTypeViewSet)
+router.register("manufacturer", ManufacturerViewSet)
+
+
+urlpatterns = [path("", include(router.urls))]
