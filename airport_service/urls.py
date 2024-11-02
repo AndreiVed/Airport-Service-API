@@ -22,6 +22,7 @@ from airport_service import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("__debug__/", include("debug_toolbar.urls")),
     path("api/v1/", include("airport.urls", namespace="airport")),
     path("api/v1/airplanes/", include("airplanes.urls", namespace="airplanes")),
     path("api/v1/routes/", include("routes.urls", namespace="routes")),
