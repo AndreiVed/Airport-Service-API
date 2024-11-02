@@ -36,7 +36,8 @@ class Airplane(models.Model):
     image = models.ImageField(
         null=True,
         blank=True,
-        upload_to=airplane_image_file_path)
+        upload_to=airplane_image_file_path
+    )
 
     class Meta:
         ordering = ["name"]
