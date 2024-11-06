@@ -10,7 +10,7 @@ from airplanes.views import (
 app_name = "airplanes"
 
 router = routers.DefaultRouter()
-router.register("airplanes", AirplaneViewSet)
+router.register("all", AirplaneViewSet)
 router.register("airplane_types", AirplaneTypeViewSet)
 router.register("manufacturer", ManufacturerViewSet)
 

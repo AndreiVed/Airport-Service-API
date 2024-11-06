@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
@@ -51,7 +50,6 @@ class RouteViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
-    serializer_class = RouteSerializer
     queryset = Route.objects.select_related("source", "destination")
 
     def get_serializer_class(self):
