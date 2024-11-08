@@ -57,4 +57,4 @@ class RouteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ("source", "destination", "distance")
+        fields = ("id", "source", "destination", "distance")

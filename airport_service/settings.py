@@ -143,7 +143,9 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "airport.permissions.IsAdminOrIfAuthenticatedReadOnly",
-    ]
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10
 }
 
 SIMPLE_JWT = {

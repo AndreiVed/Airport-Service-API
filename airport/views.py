@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.db.models import Count, F
 from rest_framework import mixins
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import GenericViewSet
 
 from airport.models import Position, Staff, Flight, Order
@@ -40,6 +43,12 @@ class StaffViewSet(
         return StaffSerializer
 
 
+class OrderAndFlightPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
 class FlightViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -48,9 +57,30 @@ class FlightViewSet(
     GenericViewSet,
 ):
     queryset = Flight.objects.all()
+    pagination_class = OrderAndFlightPagination
+
+    @staticmethod
+    def _params_to_int(query_string):
+        return [int(str_id) for str_id in query_string.split(",")]
 
     def get_queryset(self):
         queryset = self.queryset
+        routes = self.request.query_params.get("route")
+        destination_city = self.request.query_params.get("destination_city")
+        date = self.request.query_params.get("date")
+
+        if routes:
+            routes = self._params_to_int(routes)
+            queryset = queryset.filter(route__id__in=routes)
+
+        if destination_city:
+            queryset = queryset.filter(
+                route__destination__closest_big_city__name__icontains=destination_city
+            )
+        if date:
+            date = datetime.strptime(date, "%Y-%m-%d").date()
+            queryset = queryset.filter(departure_date__date=date)
+
         if self.action == "list":
             queryset = (
                 queryset
@@ -77,6 +107,7 @@ class OrderViewSet(
     queryset = Order.objects.prefetch_related(
         "order__flight__airplane", "order__flight__route"
     )
+    pagination_class = OrderAndFlightPagination
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
