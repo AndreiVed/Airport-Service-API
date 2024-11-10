@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('airplanes', '0002_alter_airplane_options_airplane_image'),
-        ('routes', '0001_initial'),
+        ('tests', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('departure_date', models.DateTimeField()),
                 ('arrival_time', models.DateTimeField()),
                 ('airplane', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='airplanes.airplane')),
-                ('route', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='routes.route')),
+                ('route', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tests.route')),
                 ('staff', models.ManyToManyField(related_name='flights', to='airport.staff')),
             ],
             options={

@@ -48,8 +48,3 @@ class AirplaneToFlightSerializer(AirplaneListSerializer):
             "capacity",
             "image",
         )
-
-# class AirplaneImageSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Airplane
-#         fields = ("id", "image",)

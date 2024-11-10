@@ -31,21 +31,21 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=63, unique=True)),
-                ('closest_big_city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='airports', to='routes.city')),
+                ('closest_big_city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='airports', to='tests.city')),
             ],
         ),
         migrations.AddField(
             model_name='city',
             name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cities', to='routes.country'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cities', to='tests.country'),
         ),
         migrations.CreateModel(
             name='Route',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('distance', models.IntegerField()),
-                ('destination', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='destinations', to='routes.airport')),
-                ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sources', to='routes.airport')),
+                ('destination', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='destinations', to='tests.airport')),
+                ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sources', to='tests.airport')),
             ],
             options={
                 'ordering': ['source'],
