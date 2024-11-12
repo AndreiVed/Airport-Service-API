@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from routes.views import CountryViewSet, CityViewSet, AirportViewSet, RouteViewSet
 
-app_name = "tests"
+app_name = "routes"
 
 router = routers.DefaultRouter()
 router.register("countries", CountryViewSet)

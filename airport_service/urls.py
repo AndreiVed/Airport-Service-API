@@ -25,6 +25,6 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/v1/", include("airport.urls", namespace="airport")),
     path("api/v1/airplanes/", include("airplanes.urls", namespace="airplanes")),
-    path("api/v1/tests/", include("routes.urls", namespace="tests")),
+    path("api/v1/routes/", include("routes.urls", namespace="tests")),
     path("api/v1/user/", include("user.urls", namespace="user")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
