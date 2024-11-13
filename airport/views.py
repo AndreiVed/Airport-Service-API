@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import Count, F
 from rest_framework import mixins
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from airport.models import Position, Staff, Flight, Order
@@ -107,6 +108,7 @@ class OrderViewSet(
     queryset = Order.objects.prefetch_related(
         "order__flight__airplane", "order__flight__route"
     )
+    permission_classes = (IsAuthenticated,)
     pagination_class = OrderAndFlightPagination
 
     def get_queryset(self):
