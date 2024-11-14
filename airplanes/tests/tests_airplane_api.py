@@ -5,8 +5,12 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from airplanes.models import Airplane, AirplaneType, Manufacturer
-from airplanes.serializers import AirplaneSerializer, AirplaneListSerializer, AirplaneTypeSerializer, \
-    ManufacturerSerializer
+from airplanes.serializers import (
+    AirplaneSerializer,
+    AirplaneListSerializer,
+    AirplaneTypeSerializer,
+    ManufacturerSerializer,
+)
 
 AIRPLANE_URL = reverse("airplanes:airplane-list")
 AIRPLANE_TYPE_URL = reverse("airplanes:airplanetype-list")
@@ -41,7 +45,7 @@ def sample_airplane(**params) -> Airplane:
         "rows": "10",
         "seats_in_row": "10",
         "airplane_type": airplane_type,
-        "manufacturer": manufacturer
+        "manufacturer": manufacturer,
     }
     defaults.update(params)
     return Airplane.objects.create(**defaults)
@@ -89,16 +93,12 @@ class AuthenticatedAirplaneApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_create_airplane_type_forbidden(self):
-        payload = {
-            "name": "type1"
-        }
+        payload = {"name": "type1"}
         res = self.client.post(AIRPLANE_TYPE_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_manufacturer_forbidden(self):
-        payload = {
-            "name": "type1"
-        }
+        payload = {"name": "type1"}
         res = self.client.post(MANUFACTURER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -110,7 +110,7 @@ class AuthenticatedAirplaneApiTests(TestCase):
             "rows": "10",
             "seats_in_row": "10",
             "airplane_type": airplane_type,
-            "manufacturer": manufacturer
+            "manufacturer": manufacturer,
         }
 
         res = self.client.post(AIRPLANE_URL, payload)
@@ -126,16 +126,12 @@ class AdminAirplaneTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_create_airplane_type(self):
-        payload = {
-            "name": "type1"
-        }
+        payload = {"name": "type1"}
         res = self.client.post(AIRPLANE_TYPE_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_create_manufacturer(self):
-        payload = {
-            "name": "type1"
-        }
+        payload = {"name": "type1"}
         res = self.client.post(MANUFACTURER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
@@ -147,7 +143,7 @@ class AdminAirplaneTests(TestCase):
             "rows": 10,
             "seats_in_row": 10,
             "airplane_type": airplane_type.id,
-            "manufacturer": manufacturer.id
+            "manufacturer": manufacturer.id,
         }
 
         res = self.client.post(AIRPLANE_URL, payload)
@@ -156,11 +152,8 @@ class AdminAirplaneTests(TestCase):
 
     def test_update_airplane_type(self):
         airplane_type = sample_airplane_type()
-        payload = {
-            "name": "type2"
-        }
-        res = self.client.patch(
-            update_url("airplanetype", airplane_type.id), payload)
+        payload = {"name": "type2"}
+        res = self.client.patch(update_url("airplanetype", airplane_type.id), payload)
         airplane_type = AirplaneType.objects.get(id=airplane_type.id)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -168,22 +161,16 @@ class AdminAirplaneTests(TestCase):
 
     def test_update_manufacturer(self):
         manufacturer = sample_airplane_manufacturer()
-        payload = {
-            "name": "manufacturer2"
-        }
-        res = self.client.patch(
-            update_url("manufacturer", manufacturer.id), payload)
+        payload = {"name": "manufacturer2"}
+        res = self.client.patch(update_url("manufacturer", manufacturer.id), payload)
         manufacturer = Manufacturer.objects.get(id=manufacturer.id)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(payload["name"], manufacturer.name)
 
     def test_update_airplane(self):
         airplane = sample_airplane()
-        payload = {
-            "name": "new_name"
-        }
-        res = self.client.patch(
-            update_url("airplane", airplane.id), payload)
+        payload = {"name": "new_name"}
+        res = self.client.patch(update_url("airplane", airplane.id), payload)
         airplane = Airplane.objects.get(id=airplane.id)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(payload["name"], airplane.name)

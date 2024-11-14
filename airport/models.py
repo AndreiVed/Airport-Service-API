@@ -35,10 +35,7 @@ class Staff(models.Model):
 class Flight(models.Model):
     route = models.ForeignKey(Route, on_delete=CASCADE)
     airplane = models.ForeignKey(Airplane, on_delete=CASCADE)
-    staff = models.ManyToManyField(
-        Staff,
-        related_name="flights"
-    )
+    staff = models.ManyToManyField(Staff, related_name="flights")
     departure_date = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
@@ -50,9 +47,7 @@ class Flight(models.Model):
 
     @staticmethod
     def validate_departure_and_arrival_dates(
-            departure_date,
-            arrival_time,
-            error_to_raise
+        departure_date, arrival_time, error_to_raise
     ):
         if departure_date > arrival_time:
             raise error_to_raise(
@@ -68,22 +63,16 @@ class Flight(models.Model):
         Flight.validate_departure_and_arrival_dates(
             departure_date=self.departure_date,
             arrival_time=self.arrival_time,
-            error_to_raise=ValidationError
+            error_to_raise=ValidationError,
         )
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return (
-            f"Order: {self.id},"
-            f"created: {self.created_at}"
-        )
+        return f"Order: {self.id}," f"created: {self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -92,16 +81,8 @@ class Order(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    flight = models.ForeignKey(
-        Flight,
-        on_delete=models.CASCADE,
-        related_name="tickets"
-    )
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name="tickets"
-    )
+    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="tickets")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
 
     class Meta:
         unique_together = ("flight", "row", "seat")

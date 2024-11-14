@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from django.db.models import Count, F
-from rest_framework import mixins
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view, OpenApiResponse
+from rest_framework import mixins, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -15,10 +17,25 @@ from airport.serializers import (
     FlightDetailSerializer,
     OrderSerializer,
     OrderListSerializer,
-    StaffListSerializer
+    StaffListSerializer,
 )
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Retrieve list of positions",
 
+    ),
+    update=extend_schema(
+        summary="Update position (Admin only)",
+
+    ),
+    partial_update=extend_schema(
+        summary="Partial update position (Admin only)",
+    ),
+    create=extend_schema(
+        summary="Create a new position (Admin only)",
+    ),
+)
 class PositionViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
@@ -29,6 +46,22 @@ class PositionViewSet(
     queryset = Position.objects.all()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Retrieve list of staff members",
+
+    ),
+    update=extend_schema(
+        summary="Update one of staff members (Admin only)",
+
+    ),
+    partial_update=extend_schema(
+        summary="Partial update one of staff member (Admin only)",
+    ),
+    create=extend_schema(
+        summary="Create a new staff member (Admin only)",
+    ),
+)
 class StaffViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
@@ -50,6 +83,22 @@ class OrderAndFlightPagination(PageNumberPagination):
     max_page_size = 100
 
 
+@extend_schema_view(
+    update=extend_schema(
+        summary="Update flight (Admin only)",
+
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve one flight",
+    ),
+
+    partial_update=extend_schema(
+        summary="Partial update flight (Admin only)",
+    ),
+    create=extend_schema(
+        summary="Create a new flight (Admin only)",
+    ),
+)
 class FlightViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -84,9 +133,10 @@ class FlightViewSet(
 
         if self.action == "list":
             queryset = (
-                queryset
-                .select_related("airplane")
-                .annotate(tickets_available=F("airplane__seats_in_row") * F("airplane__rows") - Count("tickets"))
+                queryset.select_related("airplane").annotate(
+                    tickets_available=F("airplane__seats_in_row") * F("airplane__rows")
+                    - Count("tickets")
+                )
             ).order_by("id")
         return queryset
 
@@ -98,6 +148,43 @@ class FlightViewSet(
         return FlightSerializer
 
 
+    @extend_schema(
+        summary="Retrieve all flights",
+        parameters=[
+            OpenApiParameter(
+                "destination_city",
+                type=OpenApiTypes.INT,
+                description="Filter by destination city (ex. ?destination_city=kyiv)",
+            ),
+            OpenApiParameter(
+                "route",
+                type=OpenApiTypes.INT,
+                description="Filter by route (ex. ?route=1,2)",
+            ),
+            OpenApiParameter(
+                "date",
+                type=OpenApiTypes.DATE,
+                description=(
+                    "Filter by departure date "
+                    "(ex. ?date=2022-11-19)"
+                ),
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Retrieve list of your orders",
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve one of your orders",
+    ),
+    create=extend_schema(
+        summary="Create a new order",
+    ),
+)
 class OrderViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,

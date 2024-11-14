@@ -33,11 +33,7 @@ class Airplane(models.Model):
     seats_in_row = models.IntegerField()
     airplane_type = models.ForeignKey(AirplaneType, on_delete=CASCADE)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=CASCADE)
-    image = models.ImageField(
-        null=True,
-        blank=True,
-        upload_to=airplane_image_file_path
-    )
+    image = models.ImageField(null=True, blank=True, upload_to=airplane_image_file_path)
 
     class Meta:
         ordering = ["name"]
