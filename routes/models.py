@@ -11,7 +11,11 @@ class Country(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=63, unique=True)
-    country = models.ForeignKey(Country, on_delete=CASCADE, related_name="cities")
+    country = models.ForeignKey(
+        Country,
+        on_delete=CASCADE,
+        related_name="cities"
+    )
 
     @property
     def city_country(self) -> str:

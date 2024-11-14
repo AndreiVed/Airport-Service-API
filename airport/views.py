@@ -2,8 +2,12 @@ from datetime import datetime
 
 from django.db.models import Count, F
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view, OpenApiResponse
-from rest_framework import mixins, status
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    extend_schema_view
+)
+from rest_framework import mixins
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -19,6 +23,7 @@ from airport.serializers import (
     OrderListSerializer,
     StaffListSerializer,
 )
+
 
 @extend_schema_view(
     list=extend_schema(
@@ -116,16 +121,16 @@ class FlightViewSet(
     def get_queryset(self):
         queryset = self.queryset
         routes = self.request.query_params.get("route")
-        destination_city = self.request.query_params.get("destination_city")
+        city = self.request.query_params.get("destination_city")
         date = self.request.query_params.get("date")
 
         if routes:
             routes = self._params_to_int(routes)
             queryset = queryset.filter(route__id__in=routes)
 
-        if destination_city:
+        if city:
             queryset = queryset.filter(
-                route__destination__closest_big_city__name__icontains=destination_city
+                route__destination__closest_big_city__name__icontains=city
             )
         if date:
             date = datetime.strptime(date, "%Y-%m-%d").date()
@@ -134,8 +139,9 @@ class FlightViewSet(
         if self.action == "list":
             queryset = (
                 queryset.select_related("airplane").annotate(
-                    tickets_available=F("airplane__seats_in_row") * F("airplane__rows")
-                    - Count("tickets")
+                    tickets_available=(F("airplane__seats_in_row") *
+                                       F("airplane__rows") -
+                                       Count("tickets"))
                 )
             ).order_by("id")
         return queryset
@@ -147,14 +153,14 @@ class FlightViewSet(
             return FlightDetailSerializer
         return FlightSerializer
 
-
     @extend_schema(
         summary="Retrieve all flights",
         parameters=[
             OpenApiParameter(
                 "destination_city",
                 type=OpenApiTypes.INT,
-                description="Filter by destination city (ex. ?destination_city=kyiv)",
+                description="Filter by destination city "
+                            "(ex. ?destination_city=kyiv)",
             ),
             OpenApiParameter(
                 "route",
@@ -173,6 +179,7 @@ class FlightViewSet(
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
 
 @extend_schema_view(
     list=extend_schema(

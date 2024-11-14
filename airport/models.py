@@ -51,12 +51,12 @@ class Flight(models.Model):
     ):
         if departure_date > arrival_time:
             raise error_to_raise(
-                f"'Departure date' must be earlier than 'arrival time'"
+                "'Departure date' must be earlier than 'arrival time'"
             )
         if departure_date < timezone.now() or arrival_time < timezone.now():
             raise error_to_raise(
-                f"'Departure date' and 'arrival time' "
-                f"must be not earlier than time now"
+                "'Departure date' and 'arrival time' "
+                "must be not earlier than time now"
             )
 
     def clear(self):
@@ -69,7 +69,10 @@ class Flight(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"Order: {self.id}," f"created: {self.created_at}"
@@ -81,8 +84,15 @@ class Order(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
+    flight = models.ForeignKey(
+        Flight, on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     class Meta:
         unique_together = ("flight", "row", "seat")

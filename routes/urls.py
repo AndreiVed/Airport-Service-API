@@ -1,7 +1,12 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from routes.views import CountryViewSet, CityViewSet, AirportViewSet, RouteViewSet
+from routes.views import (
+    CountryViewSet,
+    CityViewSet,
+    AirportViewSet,
+    RouteViewSet
+)
 
 app_name = "routes"
 

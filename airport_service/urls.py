@@ -30,12 +30,15 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/v1/", include("airport.urls", namespace="airport")),
-    path("api/v1/airplanes/", include("airplanes.urls", namespace="airplanes")),
+    path("api/v1/airplanes/", include(
+        "airplanes.urls",
+        namespace="airplanes"
+    )),
     path("api/v1/routes/", include("routes.urls", namespace="tests")),
     path("api/v1/user/", include("user.urls", namespace="user")),
     path("api/v1/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/v1/schema/swagger-ui/",
+        "api/v1/schema/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),

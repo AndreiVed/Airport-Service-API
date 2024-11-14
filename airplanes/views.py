@@ -12,6 +12,7 @@ from airplanes.serializers import (
     ManufacturerSerializer,
 )
 
+
 @extend_schema_view(
     list=extend_schema(
         summary="Retrieve list of airplanes",
@@ -41,6 +42,7 @@ class AirplaneViewSet(
 
         return AirplaneSerializer
 
+
 @extend_schema_view(
     list=extend_schema(
         summary="Retrieve list of airplane types",
@@ -64,6 +66,7 @@ class AirplaneTypeViewSet(
 ):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
+
 
 @extend_schema_view(
     list=extend_schema(

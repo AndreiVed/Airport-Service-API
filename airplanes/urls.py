@@ -1,7 +1,11 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from airplanes.views import AirplaneViewSet, AirplaneTypeViewSet, ManufacturerViewSet
+from airplanes.views import (
+    AirplaneViewSet,
+    AirplaneTypeViewSet,
+    ManufacturerViewSet
+)
 
 app_name = "airplanes"
 

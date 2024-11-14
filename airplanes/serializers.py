@@ -3,7 +3,6 @@ from rest_framework import serializers
 from airplanes.models import Airplane, AirplaneType, Manufacturer
 
 
-
 class AirplaneTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AirplaneType
